@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/assets/favicon2.png"/>
+    <title>Recyclage de Rasperry Pi: routeur & tunnel VPN</title>
+    <link rel="stylesheet" type="text/css" href="/assets/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/fork-awesome.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js" integrity="sha512-RDQSW3KoqJMiX0L/UBgwBmH1EmRYp8LBOiLaA8rBHIy+7OGP/7Gxg8vbt8wG4ZYd29P0Fnoq6+LOytCqx3cyoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha512-fTl/qcO1VgvKtOMApX2PdZzkziyr2stM65GYPLGuYMnuMm1z2JLJG6XVU7C/mR+E7xBUqCivykuhlzfqxXBXbg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" type="text/css" href="/assets/css/github-markdown.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism-okaidia.min.css" integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </head>
+
+<body class="post-template">
+  <div class="site-wrapper">
+    <header class="site-header outer">
+      <div class="inner">
+        <nav class="site-nav">
+          <div class="site-nav-left">
+            <a class="site-nav-logo" href="https://magnier.io"><img src="/assets/favicon2.png" alt="Vie de Nerd"></a>
+            <ul class="nav">
+              <li class="nav-current"><a href="https://magnier.io/">Hello, World_</a></li>
+              <li><a href="/donate/">Donate</a></li>
+              <li><a href="/contact/">Contact</a></li>
+            </ul>
+          </div>
+
+          <div class="site-nav-right">
+            <div class="social-links">
+
+              <a class="social-link social-link-tw" href="https://twitter.com/qsypoq" title="Twitter" target="_blank" rel="noopener">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+                  <path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"></path>
+                </svg>
+              </a>
+
+              <a class="social-link social-link-lk" href="https://www.linkedin.com/in/adam-magnier/" title="Linkedin" target="_blank" rel="noopener">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
+              </a>
+
+              <a class="social-link social-link-gh" href="https://github.com/qsypoq" title="Github" target="_blank" rel="noopener">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg>
+              </a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="site-main" class="site-main outer">
+      <div class="inner">
+        <article class="post-full post no-image">
+          <figure class="post-full-image">
+            <img srcset="medias/raspberry-pi-openwrt-mullvad-openvpn-vpn-1-1.jpg 300w, medias/raspberry-pi-openwrt-mullvad-openvpn-vpn-1-1.jpg 600w, medias/raspberry-pi-openwrt-mullvad-openvpn-vpn-1-1.jpg 1000w, medias/raspberry-pi-openwrt-mullvad-openvpn-vpn-1-1.jpg 2000w" sizes="(max-width: 800px) 400px, (max-width: 1170px) 1170px, 2000px" src="medias/raspberry-pi-openwrt-mullvad-openvpn-vpn-1-1.jpg">
+          </figure>
+          <header class="post-full-header">
+            <h1 class="post-full-title">Recyclage de Rasperry Pi: routeur & tunnel VPN</h1>
+            <section class="post-full-meta">
+              <time class="post-full-meta-date" datetime="2020-06-10">2020-06-10</time>
+            </section>
+            
+          </header>
+          <section class="post-full-content markdown-body">
+            <hr/>
+            <p>Je prépare actuellement un setup réseau pour une habitation, ce dernier étant un peu particulier car il ne disposera pas d’accès internet dédié.</p>
+<p>Mais qui dit <strong>pas d’accès internet dédié</strong>, ne dit pas <strong>pas de réseau local</strong> ni <strong>pas d’accès internet</strong>.</p>
+<p>Le cahier des charges ressemble donc à ça:</p>
+<ul>
+<li>Besoin d'un routeur DHCP.</li>
+<li>Besoin de distribuer au réseau local un accès internet quand c'est possible. La source étant variable il faut supporter plusieurs entrées différentes.</li>
+<li>La source pouvant parfois ne pas être de confiance, il est obligatoire qu'elle soit utilisée à travers un VPN.</li>
+</ul>
+<p>Ajoutez à ça une volonté de minimalisme et de recyclage technologique et vous l'avez: on va utiliser un Raspberry Pi.</p>
+<h2>Raspberry Pi &amp; Performances</h2>
+<p>Ancienne box Kodi ayant prit sa retraite trop tôt voici la bête:</p>
+<p>Raspberry Pi 2 B v1.1</p>
+<ul>
+<li>Processeur Broadcom BCM2836 à 900Mhz</li>
+<li>1024MB de RAM</li>
+<li>4 ports USB 2.0</li>
+<li>1 port ethernet 100Mbits</li>
+</ul>
+<h3>Limitations</h3>
+<p>Comme vous pouvez le remarquer le hardware limite assez les performances et la charge tenable par notre routeur.</p>
+<p>Un port USB 2.0 avec adaptateur 1000Mbits est considéré comme atteignant ~300Mbits max c'est donc la vitesse maximale atteignable si nous utilisons 2 adaptateurs et ne touchons pas au rj45 natif.</p>
+<p>Pour l'utilisation qui sera faites du miens ça ne sera absolument pas dérangeant. Il n'y aura jamais plus de 5 appareils accédant activement au web externe en simultané.</p>
+<h2>Choix de la distribution</h2>
+<p>Pour la configuration souhaitée nous avons une pléthore de façons de faire possibles. Retour sur les solutions les plus rependues:</p>
+<h3>Raspbian en natif</h3>
+<p>Serveur DHCP en utilisant <strong>isc-dhcp-server</strong>, DNS via <strong>bind</strong>, VPN via <strong>OpenVPN et</strong> redirection du trafic via <strong>iptables</strong>.</p>
+<p>Solution non retenue car je cherchais, en plus de répondre au besoin initiale, à me former / expérimenter quelque chose de nouveau. Je souhaitais donc utiliser un OS "conçu pour ça" que je ne connaissais pas / pas assez (à défaut de pouvoir tester une nouvelle solution commerciale).</p>
+<h3>OPNsense</h3>
+<p>Utilisant pfSense dans mon lab virtual j'avais envie d'utiliser OPNsense afin d’expérimenter les 2 rivaux.</p>
+<p>Le problème ici est le manque du support ARM, il y a bien des builds customs qui trainent et un support prévu pour le rpi 4 prochainement mais à l'heure actuelle je trouve cela trop "bidouille", encore plus pour le rpi 2.</p>
+<h3>pfSense</h3>
+<p>Même constat que pour OPNsense.</p>
+<h3>OpenWrt</h3>
+<p>L'enfant mal-aimé à qui je n'ai jamais donné sa chance, c’était enfin son heure de gloire !</p>
+<ul>
+<li>Raspberry Pi 2 officiellement supporté</li>
+<li>Plugin openVPN</li>
+<li>Drivers USB 1, 2, 3</li>
+<li>Drivers NDIS</li>
+<li>Drivers ath9k</li>
+</ul>
+<p>Exactement ce que je cherchais, place à la configuration.</p>
+<h2>Configuration OpenWrt</h2>
+<p>Une fois votre image téléchargée, copiée et la machine démarrée il faut faire quelques paramétrages de base. Je vous conseil de relier le routeur à un switch ou réseau déjà existant via son interface rj45 pour ne pas avoir à installer des drivers hors ligne.</p>
+<h3>Réseau</h3>
+<p>Je ne vais pas m’étendre sur ce point, il dépend de la façon dont vous souhaitez designer votre réseau.</p>
+<p>Sachez que de base l'IP du routeur est <strong><em>*192.168.1.1</em></strong><em>, l'identifiant </em><strong><em>root</em></strong><em> et que </em><strong><em>le mot de passe est vide</em></strong>*.</p>
+<p>La documentation officielle est <a href="https://openwrt.org/docs/start">disponible ici</a>.</p>
+<h3>Drivers</h3>
+<p>Souhaitant couvrir en entrée toutes les configurations que je puisse rencontrer il me faut les drivers pour les périphériques suivants:</p>
+<ul>
+<li>Ma carte wifi USB</li>
+<li>Mon adaptateur ethernet =&gt; USB</li>
+<li>Mon téléphone (Android) en partage de connexion USB</li>
+</ul>
+<p>Pour cela très simple:</p>
+<pre><code class="language-bash">opkg update
+opkg install kmod-ath9k-htc
+opkg install kmod-usb-net-rtl8152
+opkg install kmod-usb-net kmod-usb-net-cdc-ether kmod-usb-net-rndis
+
+</code></pre>
+<h2>Configuration VPN</h2>
+<p>Maintenant nous allons créer l’accès au VPN ainsi que les règles de pare-feu associées. J'utilise ici mullvad comme VPN mais vous pouvez faire la même chose avec un autre fournisseur.</p>
+<h3>Installation OpenVPN</h3>
+<p>On commence par un update des repos ainsi que l'installation des paquets nécessaires:</p>
+<pre><code class="language-bash">opkg update
+opkg install openvpn-openssl
+opkg install luci-app-openvpn
+opkg install openssl-util
+
+</code></pre>
+<p>Une fois cela fait redémarrez le routeur.</p>
+<h3>Ajout d'une connexion VPN</h3>
+<p>Direction <strong>VPN &gt; OpenVPN</strong> puis dans ajoutez une configuration <strong>mullvad_client</strong> basée sur le template <strong>routed point-to-point VPN</strong>.</p>
+<p><img alt="" src="medias/image--1-.png" /></p>
+<p>Passez en mode configuration avancée puis modifiez  <strong><em>*l'onglet Networking ____</em></strong>* comme ceci (si un paramètre n'est pas affiché de base alors ajoutez le par le menu en bas à gauche):</p>
+<p><img alt="" src="medias/image-2-1.png" /></p>
+<ul>
+<li>port <strong>1194</strong></li>
+<li>ifconfig: Supprimez la ligne si elle est présente</li>
+<li>nobind: Coché</li>
+<li>dev: <strong>tun</strong> (On cherche à sortir sur internet, pas sur le réseau local mullvad.)</li>
+<li>persist_tun: Coché. (Sans ça votre interface virtuelle sera out à chaque reboot.)</li>
+</ul>
+<p><strong><em>*Onglet VPN:</em></strong>*</p>
+<p><img alt="" src="medias/image-1-1.png" /></p>
+<ul>
+<li>client: Coché</li>
+<li>auth_user_pass: Entrez <strong>/etc/openvpn/userpass.txt</strong> le fichier n'existe pas encore mais nous le créerons après.</li>
+<li>remote: Liste des serveurs que vous souhaitez utiliser, <a href="http://web.archive.org/web/20201029215844/https://magnier.io/p/71afee79-2f83-4efe-937b-d03461f5b88f/www.mullvad.net/servers">disponible ici</a>. Attention, afin de valider la dernière ligne vous devez créer une ligne vide !</li>
+<li>proto: <strong>udp</strong></li>
+</ul>
+<p>Onglet <strong><em>*Cryptography</em></strong>*:</p>
+<p><img alt="" src="medias/image-3.png" /></p>
+<ul>
+<li>cipher: <strong>AES-256-CBC</strong></li>
+<li>ca: Uploadez le fichier <strong>mullvad_ca.crt</strong> que vous pouvez télécharger sur <a href="http://web.archive.org/web/20201029215844/https://mullvad.net/fr/account/openvpn-config/">cette page</a>. Dans l'onglet <strong>Linux</strong> récupérez l'archive, le certificat se trouve à l’intérieur.</li>
+</ul>
+<p>N'oubliez pas de sauvegarder &amp; appliquer.</p>
+<h3>Création de l'interface</h3>
+<p>Direction <strong>Network &gt; Interfaces</strong> puis <strong>Add new interface:</strong></p>
+<ul>
+<li>Name: <strong>MULLVAD_VPN</strong></li>
+<li>Protocol: <strong>Unmanaged</strong></li>
+<li>Bridge interfaces: décoché</li>
+<li>Interface: <strong>tun0</strong> (Si il n'apparait pas, sélectionnez la dernière ligne <strong>custom</strong> et entrez <strong>tun0</strong>)</li>
+</ul>
+<p>Terminez en cliquant sur "Create interface"</p>
+<h3>SSH</h3>
+<p>Petit passage en CLI, connectez vous en root sur le rpi:</p>
+<pre><code class="language-bash">ssh root@$ip
+</code></pre>
+<p>Pour commencer nous créons le fichier <strong>/etc/openvpn/userpass.txt</strong> vu plus haut (j'utilise vim car il est packagé avec la distro):</p>
+<pre><code class="language-bash">vim /etc/openvpn/userpass.txt
+</code></pre>
+<p>Le fichier doit contenir 2 lignes:</p>
+<ul>
+<li>Votre identifiant mullvad <strong><em>*SANS ESPACE</em></strong>*</li>
+<li>Le mot de passe associé a l'identifiant qui est le même pour tout le monde, la lettre m</li>
+</ul>
+<pre><code class="language-bash">cat &gt; /etc/openvpn/userpass.txt &lt;&lt; EOF
+VOTRE_ID
+m
+EOF
+chmod 0400 /etc/openvpn/userpass.txt
+</code></pre>
+<p>Une fois cela fait nous allons en profiter pour creer les regles de pare-feu tel que:</p>
+<ul>
+<li>Le LAN ne puisse acceder à internet uniquement par le VPN</li>
+<li>L'accés au LAN via internet est interdit</li>
+</ul>
+<pre><code class="language-bash">cat &gt;&gt; /etc/config/firewall &lt;&lt; EOF
+config zone
+option name 'VPN_FW'
+option input 'REJECT'
+option output 'ACCEPT'
+option forward 'REJECT'
+option masq '1'
+option mtu_fix '1'
+option network 'MULLVAD_VPN'
+config forwarding
+option dest 'VPN_FW'
+option src 'lan'
+EOF
+</code></pre>
+<p>Repartez maintenant sur l'interface web dans Network &gt; Firewall &gt; lan &gt; Edit puis retirez WAN de la liste des zones autorisées en sortie:</p>
+<p><img alt="" src="medias/image-5.png" /></p>
+<h3>Derniers réglages</h3>
+<p>Rendez vous maintenant dans <strong>Network &gt; Interfaces &gt; Edit lan &gt; DHCP Server &gt; Advanced Settings</strong></p>
+<p><img alt="" src="medias/image-4.png" /></p>
+<p>Dans <strong>DHCP-Options</strong> entrez <strong>6,10.8.0.1,193.138.218.74</strong> et sauvegardez.</p>
+<p>Le plugin OpenVPN ayant un bug sur la persistance de la configuration il faut créer une tache planifiée:</p>
+<p>Rendez-vous dans <strong>System &gt; Scheduled Tasks</strong> et insérez la tache suivante:</p>
+<pre><code class="language-bash">*/1 * * * * sed -i '/secret/d' /tmp/etc/openvpn-mullvad_client.conf
+</code></pre>
+<p>Ensuite direction <strong>VPN &gt; OpenVPN</strong>, cochez la case <strong>Enabled</strong> de votre instance VPN puis démarrez la en appuyant sur <strong>start</strong>.</p>
+<p><img alt="" src="medias/image-6.png" /></p>
+<p>Si tout s'est bien déroulé alors vous avez terminé ! Vous devriez récupérer votre accès internet, pour vérifier que vous êtes bien connecté via le VPN vous pouvez vous rendre sur le <a href="https://mullvad.net/">site de mullvad</a> qui vous indiquera si vous passez par leur service:</p>
+<p><img alt="" src="medias/image-7.png" /></p>
+<p>En cas de problème n'oubliez pas qu'OpenWrt affiche ses logs dans le GUI, à retrouver dans <strong>Status &gt; System Log</strong>.</p>
+<h2>Bilan</h2>
+<p>Nous voilà donc avec un routeur servant de serveur DHCP local lorsqu'il n'a aucun accès à internet et servant de tunnel VPN quand c'est le cas.</p>
+<p>La fonctionnalité que je cherchais à avoir était la flexibilité de la connexion source. Que ça soit via rj45, wifi, ou même tethering, dés lors que le rpi récupère une connexion internet il nous permet de nous en servir via le VPN sans avoir à interagir avec un GUI ou paramétrage annexe, et ce pour l'assemble de nos périphériques reliés.</p>
+<h3>Performances &amp; Débits</h3>
+<p>Voilà maintenant prés d'une semaine que je test la config et je ne vois aucune différences en terme de latence par rapport à une connexion internet directe.</p>
+<p>Néanmoins vous pouvez noter que je ne possède pas de connexion fibrée, mon retour se base uniquement sur des connexions vADSL &amp; 4G.</p>
+<p>Coté hardware voici quelques graphs en pleine utilisation (4 machines à ce moment):</p>
+<p><img alt="" src="medias/openwrt-raspberry-pi-graphs.png" /></p>
+<p>Je suis donc très content du résultat. Si je devais améliorer le setup la première chose à faire serait d'obtenir un Pi nouvelle version afin de pouvoir avoir des débits max plus élevés.</p>
+<p>Le top serait d'avoir la future version ARM d'ESXi tournant sur la machine afin de pouvoir s'amuser, mais ne possédant pas la machine et la version ARM d'ESXi étant encore dans les cartons, nous verrons cela au moment voulu...</p>
+          </section>
+
+          <footer class="post-full-footer">
+            <section class="author-card">
+              <img class="author-profile-image" src="//www.gravatar.com/avatar/8952a5bcfd493bf24e7c8af50f6a28da?s=250&amp;d=mm&amp;r=x" alt="Adam 'Qsypoq' Magnier">
+                <section class="author-card-content">
+                  <h4 class="author-card-name"><a href="/">Adam 'Qsypoq' Magnier</a></h4>
+                  <p>Read <a href="/">more posts</a> by this author.</p>
+                </section>
+            </section>
+          </footer>
+        </article>
+      </div>
+    </main>
+  </div>
+
+  <footer class="site-footer outer">
+    <div class="site-footer-content inner">
+      <section class="copyright"><a href="https://magnier.io"><img src="/assets/favicon.png" alt="Vie de Nerd" width="32" height="32"></a></section>
+      <nav class="site-footer-nav">
+        Powered by Persifleur <i style="color:#c0392b;" class="fa fa-heart"></i> <a href="https://magnier.io/mentions-legales">Mentions légales</a>.
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

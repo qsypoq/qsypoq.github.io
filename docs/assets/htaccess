@@ -1,0 +1,10 @@
+RewriteOptions AllowNoSlash
+DirectorySlash Off
+Redirect 301 /debuter-logiciel-libre /
+Redirect 301 /whatsapp-sur-pc /
+Redirect 301 /kali-linux/kalibrowser-docker-serveur-navigateur /
+Redirect 301 /personnaliser-unity-ubuntu-xenial-xerus /
+Redirect 301 /bloquer-pubs-hosts /
+Redirect 301 /android-multifenetre /
+Redirect 301 /docker-wordpress-email /
+Redirect 301 /wordpress/creer-formulaire-contact-pgp /
