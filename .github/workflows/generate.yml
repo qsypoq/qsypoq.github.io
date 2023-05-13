@@ -26,6 +26,7 @@ jobs:
           python convert.py
 
       - name: Push blog
+        continue-on-error: true
         run: |
           rm -rf sources
           git config user.name github-actions
