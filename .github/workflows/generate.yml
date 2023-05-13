@@ -23,11 +23,11 @@ jobs:
           pip install --no-cache-dir -r requirements.txt
           python convert.py
 
-      - name: Push update repo
+      - name: Push blog
         run: |
           rm -rf sources
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
-          git commit -m "update"
+          git commit -am "update"
           git push https://${{ secrets.GH_PAT }}@github.com/qsypoq/qsypoq.github.io.git
