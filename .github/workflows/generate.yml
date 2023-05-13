@@ -8,7 +8,7 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT }}
 
-      - name: Checkout tools repo
+      - name: Clone blog sources repo
         uses: actions/checkout@v3
         with:
           repository: qsypoq/blog-sources
