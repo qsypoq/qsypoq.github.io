@@ -1,0 +1,33 @@
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone GH Page repo
+        uses: actions/checkout@v3
+
+      - name: Checkout tools repo
+        uses: actions/checkout@v3
+        with:
+          repository: qsypoq/blog-sources
+          token: ${{ secrets.GH_PAT }}
+          path: sources
+
+      - name: Install python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Generate blog
+        run: |
+          pip install --no-cache-dir -r requirements.txt
+          python convert.py
+
+      - name: Push update repo
+        run: |
+          rm -rf sources
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "update"
+          git push
