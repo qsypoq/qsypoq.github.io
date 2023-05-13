@@ -30,4 +30,5 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -am "update"
-          git push https://${{ secrets.GH_PAT }}@github.com/qsypoq/qsypoq.github.io.git
+          git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/${{ github.repository }}
+          git push
