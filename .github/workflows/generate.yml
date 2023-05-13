@@ -30,5 +30,4 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "update"
-          git push
           git push https://${{ secrets.GH_PAT }}@github.com/qsypoq/qsypoq.github.io.git
