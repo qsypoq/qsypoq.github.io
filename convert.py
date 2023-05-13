@@ -74,10 +74,6 @@ for path in Path('sources/articles').rglob('*.md'):
                     article=article
                 ))
 
-            ### Render 301 if needed
-            if 'oldurl' in md.Meta:
-                add_redirect(f"{md.Meta['oldurl'][0]}", f"/{md.Meta['slug']}")
-
 ### Render Home
 POSTS = {
     post: POSTS[post] for post in sorted(POSTS, key=lambda post: POSTS[post]['date'], reverse=True)
