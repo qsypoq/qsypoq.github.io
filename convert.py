@@ -11,6 +11,7 @@ import readtime
 
 ### Clean old renders
 os.system(f"rm -rf docs/*")
+os.system(f"echo 'magnier.io' > docs/CNAME")
 
 def check_exist(path):
     if not os.path.exists(path):
