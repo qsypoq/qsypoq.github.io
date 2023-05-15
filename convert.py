@@ -10,8 +10,7 @@ from bs4 import BeautifulSoup
 import readtime
 
 ### Clean old renders
-os.system(f"rm -rf docs/*")
-os.system(f"echo 'magnier.io' > docs/CNAME")
+os.system(f'rm -rf $(find docs -mindepth 1 -name "*" ! -name "CNAME")')
 
 def check_exist(path):
     if not os.path.exists(path):
