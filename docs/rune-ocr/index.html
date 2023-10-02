@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/assets/favicon2.png"/>
+    <title>Experimenting Golang by gaming optimization.</title>
+    <link rel="stylesheet" type="text/css" href="/assets/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/fork-awesome.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js" integrity="sha512-RDQSW3KoqJMiX0L/UBgwBmH1EmRYp8LBOiLaA8rBHIy+7OGP/7Gxg8vbt8wG4ZYd29P0Fnoq6+LOytCqx3cyoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha512-fTl/qcO1VgvKtOMApX2PdZzkziyr2stM65GYPLGuYMnuMm1z2JLJG6XVU7C/mR+E7xBUqCivykuhlzfqxXBXbg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" type="text/css" href="/assets/css/github-markdown.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism-okaidia.min.css" integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </head>
+
+<body class="post-template">
+  <div class="site-wrapper">
+    <header class="site-header outer">
+      <div class="inner">
+        <nav class="site-nav">
+          <div class="site-nav-left">
+            <a class="site-nav-logo" href="https://magnier.io"><img src="/assets/favicon2.png" alt="Vie de Nerd"></a>
+            <ul class="nav">
+              <li class="nav-current"><a href="https://magnier.io/">Hello, World_</a></li>
+              <li><a href="/donate/">Donate</a></li>
+              <li><a href="/contact/">Contact</a></li>
+            </ul>
+          </div>
+
+          <div class="site-nav-right">
+            <div class="social-links">
+
+              <a class="social-link social-link-tw" href="https://twitter.com/qsypoq" title="Twitter" target="_blank" rel="noopener">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+                  <path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"></path>
+                </svg>
+              </a>
+
+              <a class="social-link social-link-lk" href="https://www.linkedin.com/in/adam-magnier/" title="Linkedin" target="_blank" rel="noopener">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
+              </a>
+
+              <a class="social-link social-link-gh" href="https://github.com/qsypoq" title="Github" target="_blank" rel="noopener">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg>
+              </a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="site-main" class="site-main outer">
+      <div class="inner">
+        <article class="post-full post no-image">
+          <figure class="post-full-image">
+            <img srcset="medias/summoners-war-rune-efficiency-ocr.jpg 300w, medias/summoners-war-rune-efficiency-ocr.jpg 600w, medias/summoners-war-rune-efficiency-ocr.jpg 1000w, medias/summoners-war-rune-efficiency-ocr.jpg 2000w" sizes="(max-width: 800px) 400px, (max-width: 1170px) 1170px, 2000px" src="medias/summoners-war-rune-efficiency-ocr.jpg">
+          </figure>
+          <header class="post-full-header">
+            <h1 class="post-full-title">Experimenting Golang by gaming optimization.</h1>
+            <section class="post-full-meta">
+              <time class="post-full-meta-date" datetime="2023-08-31">2023-08-31</time>
+            </section>
+            
+          </header>
+          <section class="post-full-content markdown-body">
+            <hr/>
+            <p>Welcome to my episode 2 (oh, this is a serie now ?) of learning Golang. As I'm still on my Golang learning journey I'm hungry about personnal project where I can practice It. Did I told you about our lord and savior Summoners War ?</p>
+<p>Summoners War is a popular mobile game where players take on the role of a summoner with the ability to summon creatures to fight on their behalf. These monsters come in various elemental types and have different roles and abilities in battles.</p>
+<p>The gameplay primarily revolves around turn-based battles where players assemble teams of monsters to fight against computer-controlled opponents or other players in player-versus-player (PvP) modes. Battles are strategic, and success often depends on team composition, rune management, and understanding of elemental advantages and disadvantages.</p>
+<p>See old school Final Fantasy ? Pretty much the same if your characters and items obtention what mixed with a casino.</p>
+<h2>How runes works ?</h2>
+<p>I will simplify this part to what's revelant for the project. When you start to be advanced in the game, runes you loot have 3 to 5 lines of random caracteristics. Each of these imparts a specific amount of that characteristic to your monster, within a certain range.</p>
+<p>The range is contingent on the specific characteristic, and the amount is subject to luck. Now you can discern the direction we're heading in.</p>
+<p><img alt="Base rune SW" src="medias/rune1.png" /></p>
+<p>A rune can be upgraded up to level 15, and during this process, it receives an additional 3 to 4 boosts in stats. These boosts fall within the same range as the initial ones.</p>
+<p>This implies that the same rune can either become quite powerful or relatively lackluster depending on the quality of the boosts received during its leveling process.</p>
+<p>This is what a bad rune look with my actual standards:</p>
+<p><img alt="Bad rune SW" src="medias/bad-rune.png" /></p>
+<p>And a good one:</p>
+<p><img alt="Good rune SW" src="medias/good-rune.png" /></p>
+<p>Rune efficiency calculates the percentage of a rune's stats in comparison to those of a perfect rune. As you advance in the game, especially in mid to late stages, acquiring runes with higher efficiency becomes crucial for maximizing your team's potential. In my example, the first rune has an efficiency of approximately 79%, whereas the second one approaches 99%.</p>
+<h2>Efficiency</h2>
+<p>The formula to calcul efficiency was theorized years ago by Barion and can be summarized like this:
+efficiency = (sum(sub_stat/sub_stat_max)+1)/2.8</p>
+<p>As we are aware of the formula, we can calculate each rune's efficiency ourselves, correct? However, the issue lies in the immense effort required to perform this calculation for each individual rune. There are occasions where you may need to sift through approximately a thousand runes, either to enhance your weaker ones or to decide whether to sell a new rune due to it not meeting your current minimum standards.</p>
+<p>The community already have gone this path, and a popular tool for this is called "Summoners War Optimizer". Despite it an insanely compleat application with a plethora of features, calculating efficiency is just one of it, and, by design, miss one of my need. Sometimes, all I want is to simply navigate to my inventory, evaluate my runes, and efficiently sift through them for selling or replacement, nothing more, nothing less.</p>
+<p>The actual workflow for SWOP is:</p>
+<ul>
+<li>Plug your device to a special proxy, which can extract a json files of your account with many infos in it, including your runes.</li>
+<li>Import that file to the website</li>
+<li>Access to the table where all your runes are listed</li>
+<li>Ranked them by one criteria of another</li>
+<li>For each one I decide to sell, found it in my inventory</li>
+</ul>
+<p>This take so many click I can't, I just want to pop a random rune in my inventory, know if it's worth keeping and voila.</p>
+<h2>Designing the application</h2>
+<p>After searching for a while I didn't found any app doing that so, I decided to create it myself.</p>
+<p>So what it should look like:</p>
+<ul>
+<li>Simple GUI App</li>
+<li>Return rune's efficiency</li>
+<li>Do not break the T.O.S.</li>
+<li>DO NOT BREAK THE T.O.S.</li>
+</ul>
+<p>We also need to think about our app workflow:</p>
+<ul>
+<li>Get current rune's values</li>
+<li>Do our calculations</li>
+<li>Return result to user</li>
+<li>Start again on next rune</li>
+</ul>
+<p>That's a start. Now let's have fun.</p>
+<h2>Let's Go</h2>
+<h3>Getting current rune's value</h3>
+<p>To get text value from the game we have many options, but doing it without breaking the T.O.S. can be touchy. However, capturing video input is OK, as it is needed for example by content creators to stream the game, or create videos.</p>
+<p>By screenshooting the game we can use Optical Character Recognition (O.C.R.) on the capture to scan and process it to text. So now, we need to get that capture.</p>
+<p>Lurking around I found this gist https://gist.github.com/rgl/284d7a56d839e503fd953c110b9cee13, I started by patching the included flip-trick as directed in the comment and add a crop, to only get the rune's stats.</p>
+<p>At this point this is the output:</p>
+<p><img alt="Base rune SW" src="medias/rune1.png" /></p>
+<p>Now, we need to segment them into blocks of plain text. This will reduce unnecessary clutter and enhance the reliability of future OCR work. Additionally, we should avoid excessive use of colors and visual effects for better readability.</p>
+<p>I started by creating a function to simplify the image, adding contrast and converting it to grayscale:</p>
+<pre><code class="language-go">func adjust_brightness(img image.Image) image.Image {
+    result := adjust.Contrast(img, +0.5)
+    grayscale := gift.New(gift.Grayscale())
+    dst := image.NewNRGBA(grayscale.Bounds(result.Bounds()))
+    grayscale.Draw(dst, result)
+    return dst
+}
+</code></pre>
+<p>Then I created 4 function to split the image into simpler block to process, and grouping them by categories:</p>
+<ul>
+<li>The rune name and current level</li>
+<li>The base stat and if there is one, the static inate.</li>
+<li>All subs which can grow and where most of the effiency reside.</li>
+</ul>
+<pre><code class="language-go">func crop_custom(img image.Image, ratiow float64, ratioh float64, anchor gift.Anchor) image.Image {
+    width := img.Bounds().Dx()
+    height := img.Bounds().Dy()
+    h := gift.New(gift.CropToSize(int(float64(width)*ratiow), int(float64(height)*ratioh), anchor))
+    resized := image.NewRGBA(h.Bounds(img.Bounds()))
+    h.Draw(resized, img)
+    return resized
+}
+func generate_rune_name(img image.Image) image.Image {
+    finaldst := crop_custom(img, 0.8803, 0.7778, gift.LeftAnchor)
+    generated := crop_custom(finaldst, 0.88, 0.2143, gift.TopRightAnchor)
+    return generated
+}
+
+func generate_rune_stats(img image.Image) image.Image {
+    finaldst := crop_custom(img, 0.8028, 0.5556, gift.TopRightAnchor)
+    generated := crop_custom(finaldst, 0.5263, 0.5, gift.BottomLeftAnchor)
+    return generated
+}
+
+func generate_rune_subs(img image.Image) image.Image {
+    finaldst := crop_custom(img, 0.5352, 0.80, gift.LeftAnchor)
+    generated := crop_custom(finaldst, 1, 0.4167, gift.BottomRightAnchor)
+    return generated
+}
+</code></pre>
+<p>While being a little messy this is the cleaner way I found ATM, each block of text needing multiple crop from differents anchors. At first I used pixel for reference but the result was an app which can only be used with a fixed resolution and screen, which made the reusability by other people too complex and restrictive, switching to % of screen made it far more portable.</p>
+<p>Our images now looks like this (another rune for example):</p>
+<p><img alt="Name rune SW" src="medias/tmp_name.png" />
+<img alt="Stats rune SW" src="medias/tmp_stats.png" />
+<img alt="Subs rune SW" src="medias/tmp_subs.png" /></p>
+<p>At this point it is ready to be processed by O.C.R., for this I choosed Tesseract https://github.com/tesseract-ocr/tesseract. Tesseract provide a CLI taking a image in input and returning it's O.C.R. result.</p>
+<p>We only need to install it then can use it like this:</p>
+<pre><code class="language-go">func ocr(path string) string {
+    cmdArgs := []string{path, &quot;stdout&quot;, &quot;--psm&quot;, &quot;6&quot;}
+    cmd := exec.Command(&quot;C:\\Program Files\\Tesseract-OCR\\tesseract.exe&quot;, cmdArgs...)
+
+    var out bytes.Buffer
+    multi := io.MultiWriter(&amp;out)
+    cmd.Stdout = multi
+
+    if err := cmd.Run(); err != nil {
+        log.Fatalln(err)
+    }
+    return out.String()
+}
+</code></pre>
+<p>At first I choosed to create tmp files on filesystem before sending them to Tesseract. But soon enough my stingy part wanted to get rid of this and do everything in RAM to save on SSD life time.</p>
+<p>For this we need to go a little deeper on Tesseract options, by using stdin arg we can pass the image directly as input instead of the image's path on FS. This is the tricky part, first, exec.Command only support a string array as parameter. I tried to trick it using b64 encoding and stuff but it didn't worked.</p>
+<p>This where StdinPipe came into action. This function returns a pipe connected to the command's stdin when it's started, this time, it worked, kind of... because Tesseract is waiting for a byte array. So first of all, we need to convert our image to it.</p>
+<pre><code class="language-go">func image_to_byte(img image.Image) []byte {
+    buf := new(bytes.Buffer)
+    err := png.Encode(buf, img)
+    if err != nil {
+        fmt.Println(&quot;failed to create buffer&quot;, err)
+    }
+    img_byte := buf.Bytes()
+    return img_byte
+}
+</code></pre>
+<p>Ok NOW, it works.</p>
+<pre><code class="language-go">func ocrbis(img []byte) string {
+    cmdArgs := []string{&quot;stdin&quot;, &quot;stdout&quot;, &quot;--psm&quot;, &quot;6&quot;}
+    cmd := exec.Command(&quot;C:\\Program Files\\Tesseract-OCR\\tesseract.exe&quot;, cmdArgs...)
+    cmd.SysProcAttr = &amp;syscall.SysProcAttr{HideWindow: true}
+    stdin, err := cmd.StdinPipe()
+    if err != nil {
+        panic(err)
+    }
+
+    go func() {
+        defer stdin.Close()
+        if _, err := stdin.Write(img); err != nil {
+            panic(err)
+        }
+    }()
+
+    var out bytes.Buffer
+    multi := io.MultiWriter(&amp;out)
+    cmd.Stdout = multi
+
+    if err := cmd.Run(); err != nil {
+        log.Fatalln(err)
+    }
+    return out.String()
+}
+</code></pre>
+<p>Wrapping them togethers:</p>
+<pre><code class="language-go">func get_text(img image.Image) string {
+    imgbyte := image_to_byte(img)
+    return ocrbis(imgbyte)
+}
+</code></pre>
+<p>At this stage, we can submit our images to Tesseract, which will then provide us the text version. Before we proceed with efficiency calculations, there are some necessary text processing steps to be taken.
+s</p>
+<h3>Implementing efficiency formula</h3>
+<p>First we need to create the list of maximum value a stat can be.</p>
+<pre><code class="language-go">var max_value = map[string]int{
+    &quot;HPper&quot;:      40,
+    &quot;DEFper&quot;:     40,
+    &quot;ATKper&quot;:     40,
+    &quot;Accuracy&quot;:   40,
+    &quot;CRI Rate&quot;:   30,
+    &quot;CRI Dmg&quot;:    35,
+    &quot;ATK&quot;:        100,
+    &quot;DEF&quot;:        100,
+    &quot;HP&quot;:         1875,
+    &quot;SPD&quot;:        30,
+    &quot;Resistance&quot;: 40,
+}
+</code></pre>
+<p>Tesseract acting weird sometime we also need to add cleaning and correcting functions. Trimming all spaces, delete some weird added chars, etc.</p>
+<pre><code class="language-go">func trimAllSpace(s string) string {
+    return strings.Join(strings.Fields(s), &quot; &quot;)
+}
+
+func clean_char(to_clean string, char string) string {
+    regex := regexp.MustCompile(char)
+    cleaned := regex.ReplaceAllString(to_clean, &quot;&quot;)
+    return cleaned
+}
+</code></pre>
+<p>If some text is badly interpreted, we also need to catch it:</p>
+<p>First, detecting if the stat actually exist:</p>
+<pre><code class="language-go">func stat_exist(stat string) bool {
+    for value, _ := range max_value {
+        if stat == value {
+            return true
+        }
+    }
+    return false
+}
+</code></pre>
+<p>Then, if needed, correcting any error in interpreted text:</p>
+<pre><code class="language-go">func correct_stat(stat string) string {
+    hit := 0
+    try := 0
+    if stat_exist(stat) {
+        return stat
+    } else {
+        for value, _ := range max_value {
+            hit = 0
+            try = 0
+            if len(stat) != len(value) {
+                continue
+            } else {
+                for i := 0; i &lt; len(value); i++ {
+                    if value[i] == stat[i] {
+                        hit = hit + 1
+                        try = try + 1
+                    } else {
+                        try = try + 1
+                    }
+                }
+                if float64(hit)/float64(try) &gt; 0.66 {
+                    return value
+                }
+
+            }
+        }
+    }
+    return &quot;error&quot;
+}
+</code></pre>
+<p>We also split the stats and their value:</p>
+<pre><code class="language-go">func split_stats(rune_subs string) []string {
+    repercent := regexp.MustCompile(&quot;\n&quot;)
+    percent_done := repercent.ReplaceAllString(rune_subs, &quot;|&quot;)
+    cleaned := clean_char(percent_done, &quot;\\)&quot;)
+    cleaned = clean_char(cleaned, &quot;\\(&quot;)
+    cleaned = clean_char(cleaned, &quot;\\(&quot;)
+    cleaned = clean_char(cleaned, &quot;©&quot;)
+    result := strings.Split(cleaned, &quot;|&quot;)
+    return result
+}
+</code></pre>
+<p>Wrapping capture, image manipulation, OCR then text manipulation:</p>
+<pre><code class="language-go">func generate_rune() (string, string, string) {
+    img, _ := capture(&quot;Summoners War - MuMu Player&quot;)
+    adjusted__img := adjust_brightness(img)
+    name := get_text(generate_rune_name(adjusted__img))
+    stats := get_text(generate_rune_stats(adjusted__img))
+    subs := get_text(generate_rune_subs(adjusted__img))
+    return name, stats, subs
+}
+</code></pre>
+<p>So, now we have our function that returns the current stat every time it is executed. Next, we will proceed with calculating efficiency.</p>
+<p>First, we need to determine the rune level in order to understand how many procs will occur when upgraded to the maximum level. Up to level 3, 4 procs will occur; none after 12. Then, (4 - X) procs will occur for every 3 levels, where X is the modulo 3.</p>
+<pre><code class="language-go">func futur_procs(rune_name string) int {
+    if strings.Contains(rune_name, &quot;+&quot;) {
+        re := regexp.MustCompile(&quot;^\\+[0-9]+&quot;)
+        levelstring := re.FindString(rune_name)
+        level := clean_char(levelstring, &quot;\\+&quot;)
+        level_int, _ := strconv.Atoi(level)
+        if level_int &gt;= 12 {
+            return 0
+        }
+        to_proc := fmt.Sprintf(&quot;%.0f&quot;, (float64(12)-float64(level_int))/3)
+        to_proci, _ := strconv.Atoi(to_proc)
+        return to_proci
+    } else {
+        return 4
+    }
+}
+</code></pre>
+<p>Now we get the current effectives hits number (and not real hit, the effectives ones being calculated based on efficiency):</p>
+<pre><code class="language-go">func get_hit_number(subs string, stat string) float64 {
+    splitted := split_stats(subs)
+    total_hits := float64(0)
+
+    for _, v := range splitted {
+        if !strings.Contains(v, &quot;+&quot;) {
+            continue
+        }
+        result := strings.Split(v, &quot;+&quot;)
+        subs := trimAllSpace(result[0])
+        subs = clean_char(subs, &quot;[0-9]&quot;)
+        value := trimAllSpace(result[1])
+
+        if strings.Contains(value, &quot;%&quot;) {
+            if strings.Contains(subs, &quot;HP&quot;) || strings.Contains(subs, &quot;ATK&quot;) || strings.Contains(subs, &quot;DEF&quot;) {
+                subs = strings.TrimSpace(subs)
+                subs = subs + &quot;per&quot;
+            }
+            value = strings.Replace(value, &quot;%&quot;, &quot;&quot;, -1)
+        }
+        hit_number := get_hit_value(value, subs)
+        total_hits = total_hits + hit_number
+    }
+
+    if strings.Count(stat, &quot;+&quot;) == 2 {
+        stat = strings.Replace(stat, &quot;©&quot;, &quot;&quot;, -1)
+        splitted := split_stats(stat)
+        result := strings.Split(splitted[1], &quot;+&quot;)
+        subs := trimAllSpace(result[0])
+        subs = clean_char(subs, &quot;[0-9]&quot;)
+        value := trimAllSpace(result[1])
+        if strings.Contains(value, &quot;%&quot;) {
+            if strings.Contains(subs, &quot;HP&quot;) || strings.Contains(subs, &quot;ATK&quot;) || strings.Contains(subs, &quot;DEF&quot;) {
+                subs = strings.TrimSpace(subs)
+                subs = subs + &quot;per&quot;
+            }
+            value = strings.Replace(value, &quot;%&quot;, &quot;&quot;, -1)
+        }
+        hit_inate := get_hit_value(value, subs)
+        total_hits = total_hits + hit_inate
+    }
+
+    return total_hits
+}
+</code></pre>
+<p>Then we compute the efficiency, implementing the formula:</p>
+<pre><code class="language-go">func compute_efficiency(hit_number float64) float64 {
+    efficiency := ((1 + hit_number) / 2.8) * 100
+    return efficiency
+}
+</code></pre>
+<p>Wrapping them togethers, we generate the rune, then return it's name, stats, subs, current efficiency and calculate potential max efficiency. To do so we take the number of hits waiting to happen then multiply it by 0.2, being the value of each hit in the formula if it happen with max value.</p>
+<pre><code class="language-go">func get_efficiency() (string, string, string, string, string) {
+    rune_name, rune_stats, rune_subs := generate_rune()
+    to_proc := futur_procs(rune_name)
+    current_efficiency := fmt.Sprintf(&quot;%.2f&quot;, compute_efficiency(get_hit_number(rune_subs, rune_stats)))
+    potentiel_efficiency := fmt.Sprintf(&quot;%.2f&quot;, compute_efficiency(get_hit_number(rune_subs, rune_stats)+(float64(to_proc)*0.2)))
+    return clean_char(rune_name, &quot;\n&quot;), rune_stats, rune_subs, current_efficiency, potentiel_efficiency
+}
+</code></pre>
+<p>We also compute the tier equivalent of the efficiency, based on maximal potential procs:</p>
+<pre><code class="language-go">func get_tier(efficiency string) (string, color.RGBA) {
+    score, _ := strconv.ParseFloat(efficiency, 64)
+    switch {
+    case score &lt; 85.7142857:
+        return &quot;Rare&quot;, color.RGBA{R: 67, G: 214, B: 215, A: 220}
+    case score &gt; 85.7142857 &amp;&amp; score &lt; 92.8571429:
+        return &quot;Hero&quot;, color.RGBA{R: 193, G: 17, B: 140, A: 220}
+    case score &gt; 92.8571429:
+        return &quot;Legend&quot;, color.RGBA{R: 187, G: 75, B: 28, A: 220}
+    default:
+        return &quot;error&quot;, color.RGBA{0, 0, 0, 1}
+    }
+}
+</code></pre>
+<p>Spoiler: you can see colors here, because the next step is to do the GUI.</p>
+<h3>Leaving the terminal</h3>
+<p>Terminal is cool, but compiling on fly the code to run it manually each time you select a new rune is still too much for me. I wanted a GUI auto refreshing the current rune values.</p>
+<p>Here come Fyne, a cross platform GUI toolkit for Go.</p>
+<p>With Fyne, creating a window is as simple as:</p>
+<pre><code class="language-go">    os.Setenv(&quot;FYNE_SCALE&quot;, &quot;1&quot;)
+    a := app.New()
+    a.Settings().SetTheme(theme.DarkTheme())
+    w := a.NewWindow(&quot;SW LRA&quot;)
+    logo, _ := fyne.LoadResourceFromPath(&quot;./logo.png&quot;)
+    w.SetIcon(logo)
+    w.Resize(fyne.NewSize(225, 175))
+    w.ShowAndRun()
+</code></pre>
+<p><img alt="Window" src="medias/window1.png" /></p>
+<p>Then we want to add elements, using Fyne you can split the window using containers. This containers are used to organize a list of elements put into thems.</p>
+<p>Creation a vertical container, each element will be verticaly aligned. So we create one, then put the layout of our app in it:</p>
+<pre><code class="language-go">custom_container := container.NewVBox()
+start_button := widget.NewButton(&quot;Start scan&quot;, func() {})
+start_button := widget.NewButton(&quot;Stop scan&quot;, func() {})
+customize_container(custom_container, []fyne.CanvasObject{layout.NewSpacer(), start_button})
+</code></pre>
+<p>I created the customize_container() function clean and add an array of item to a container:</p>
+<pre><code class="language-go">func customize_container(target_container *fyne.Container, items []fyne.CanvasObject) {
+    target_container.RemoveAll()
+    target_container.Objects = items
+    target_container.Refresh()
+}
+</code></pre>
+<p>Then we set our window content to be this container before refreshing window's content.</p>
+<pre><code class="language-go">w.SetContent(custom_container)
+w.Content().Refresh()
+</code></pre>
+<p>At this time, the window is generated, this only a Start scan button, we now need to add our features. First, the text placeholders.</p>
+<pre><code class="language-go">func gen_txt(content string, color color.Color, style fyne.TextStyle, size float32) *canvas.Text {
+    newtxt := canvas.NewText(content, color)
+    newtxt.Alignment = fyne.TextAlignCenter
+    newtxt.TextStyle = style
+    newtxt.TextSize = size
+    return newtxt
+}
+rune_name_txt := gen_txt(&quot;Rune Name&quot;, color.White, fyne.TextStyle{Bold: true}, 14)
+rune_eff_txt := gen_txt(&quot;Rune Eff&quot;, white, fyne.TextStyle{Bold: false}, 14)
+rune_tier_txt := gen_txt(&quot;Rune Tier&quot;, white, fyne.TextStyle{Bold: false}, 14)
+rune_maxeff_txt := gen_txt(&quot;Rune Max Eff&quot;, white, fyne.TextStyle{Bold: false}, 14)
+rune_maxtier_txt := gen_txt(&quot;Rune Max Tier&quot;, white, fyne.TextStyle{Bold: false}, 14)
+</code></pre>
+<p>Then, the start &amp; stop buttons:</p>
+<pre><code class="language-go">    stop_button := widget.NewButtonWithIcon(&quot;Stop Scan&quot;, theme.ContentClearIcon(), func() {
+        scan = false
+        customize_container(custom_container, []fyne.CanvasObject{layout.NewSpacer(), start_button})
+        w.Content().Refresh()
+    })
+
+    start_button = widget.NewButtonWithIcon(&quot;Start Scan&quot;, theme.NavigateNextIcon(), func() {
+        scan = true
+        customize_container(custom_container, []fyne.CanvasObject{rune_name_txt, rune_eff_txt, rune_tier_txt, rune_maxeff_txt, rune_maxtier_txt, layout.NewSpacer(), stop_button})
+        w.Content().Refresh()
+        inf_run := func() {
+            for scan {
+                rune_name, _, _, current_efficiency, max_efficiency := get_efficiency()
+                rune_name_txt.Text = rune_name
+                rune_tier_txt.Text, rune_tier_txt.Color = get_tier(current_efficiency)
+                rune_eff_txt.Text = &quot;Efficiency: &quot; + current_efficiency + &quot;%&quot;
+                rune_tier_txt.Text = &quot;Tier: &quot; + rune_tier_txt.Text
+                if max_efficiency == current_efficiency {
+                    rune_maxeff_txt.Text = &quot; &quot;
+                    rune_maxtier_txt.Text = &quot; &quot;
+                } else {
+                    rune_eff_txt.Text = &quot;Current &quot; + rune_eff_txt.Text
+                    rune_tier_txt.Text = &quot;Current &quot; + rune_tier_txt.Text
+                    rune_maxeff_txt.Text = &quot;Potential Efficiency: &quot; + max_efficiency + &quot;%&quot;
+                    rune_maxtier_txt.Text, rune_maxtier_txt.Color = get_tier(max_efficiency)
+                    rune_maxtier_txt.Text = &quot;Potential Tier: &quot; + rune_maxtier_txt.Text
+                }
+                custom_container.Refresh()
+                w.Content().Refresh()
+                time.Sleep(time.Millisecond * 100)
+            }
+        }
+        go inf_run()
+    })
+</code></pre>
+<p>The stop button only do one thing when pressed: stop the current scan and show the start button where all our work live.</p>
+<p>The start button, when pressed, set the window's container with our placeholders which will be feed with our rune infos later. Then we declare a scan function which will call our OCR and efficiency functions to actually generated thoses values. Finally, is refresh the window to show them to the user. This function is called a go routine and allow us to run it in background, without it, when the stop button is pressed the action would have been queued to be run... after the, currently, infinite function.</p>
+<p>For a better user experience it would be great to have our application's window other the game. To reach this we can use window's "always on top" feature. Implementation is done by calling user32.dll, a core windows dll containing Windows's API functions related to the Windows user interface.</p>
+<pre><code class="language-go">func GetWindowHandleByWindowName(window_name string) uintptr {
+    user32dll := windows.MustLoadDLL(&quot;user32.dll&quot;)
+    enumwindows := user32dll.MustFindProc(&quot;EnumWindows&quot;)
+
+    var the_handle uintptr
+    window_byte_name := []byte(window_name)
+
+    // Windows will loop over this function for each window.
+    wndenumproc_function := syscall.NewCallback(func(hwnd uintptr, lparam uintptr) uintptr {
+        // Allocate 100 characters so that it has something to write to.
+        var filename_data [100]uint16
+        max_chars := uintptr(100)
+
+        getwindowtextw := user32dll.MustFindProc(&quot;GetWindowTextW&quot;)
+        getwindowtextw.Call(hwnd, uintptr(unsafe.Pointer(&amp;filename_data)), max_chars)
+
+        // If there's a match, save the value and return 0 to stop the iteration.
+        if strings.Contains(string(windows.UTF16ToString([]uint16(filename_data[:]))), string(window_byte_name)) {
+            the_handle = hwnd
+            return 0
+        }
+
+        return 1
+    })
+
+    // Call the above looping function.
+    enumwindows.Call(wndenumproc_function, uintptr(0))
+
+    return the_handle
+}
+
+const SWP_NOSIZE = uintptr(0x0001)
+const SWP_NOMOVE = uintptr(0x0002)
+
+func IntToUintptr(value int) uintptr {
+    return uintptr(value)
+}
+
+func setontop(windows_name string) {
+    time.Sleep(time.Millisecond * 100)
+    SetWindowAlwaysOnTop(GetWindowHandleByWindowName(windows_name))
+}
+
+func SetWindowAlwaysOnTop(hwnd uintptr) {
+    user32dll := windows.MustLoadDLL(&quot;user32.dll&quot;)
+    setwindowpos := user32dll.MustFindProc(&quot;SetWindowPos&quot;)
+    setwindowpos.Call(hwnd, IntToUintptr(-1), 0, 0, 100, 100, SWP_NOSIZE|SWP_NOMOVE)
+}
+</code></pre>
+<p>The only curious thing here is the need of delay before setting the window on top, my guess is the code run too fast and without it our app window's isn't ready yet to be targetted by Windows.</p>
+<p>Now we have everything needed, we can test it:</p>
+<video controls width="840">
+    <source src="medias/sw-rune-analyzer.mp4"
+            type="video/mp4">
+
+    Sorry, your browser doesn't support embedded videos.
+</video>
+
+<p>And voilà. All the source code is available on <a href="https://github.com/qsypoq/SW-Live-Rune-Efficiency">my github</a>.</p>
+          </section>
+
+          <footer class="post-full-footer">
+            <section class="author-card">
+              <img class="author-profile-image" src="//www.gravatar.com/avatar/8952a5bcfd493bf24e7c8af50f6a28da?s=250&amp;d=mm&amp;r=x" alt="Adam 'Qsypoq' Magnier">
+                <section class="author-card-content">
+                  <h4 class="author-card-name"><a href="/">Adam 'Qsypoq' Magnier</a></h4>
+                  <p>Read <a href="/">more posts</a> by this author.</p>
+                </section>
+            </section>
+          </footer>
+        </article>
+      </div>
+    </main>
+  </div>
+
+  <footer class="site-footer outer">
+    <div class="site-footer-content inner">
+      <section class="copyright"><a href="https://magnier.io"><img src="/assets/favicon.png" alt="Vie de Nerd" width="32" height="32"></a></section>
+      <nav class="site-footer-nav">
+        Powered by Persifleur <i style="color:#c0392b;" class="fa fa-heart"></i> <a href="https://magnier.io/mentions-legales">Mentions légales</a>.
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
