@@ -168,7 +168,7 @@ func generate_rune_subs(img image.Image) image.Image {
 <p><img alt="Name rune SW" src="medias/tmp_name.png" />
 <img alt="Stats rune SW" src="medias/tmp_stats.png" />
 <img alt="Subs rune SW" src="medias/tmp_subs.png" /></p>
-<p>At this point it is ready to be processed by O.C.R., for this I choosed Tesseract https://github.com/tesseract-ocr/tesseract. Tesseract provide a CLI taking a image in input and returning it's O.C.R. result.</p>
+<p>At this point it is ready to be processed by O.C.R., for this I choosed <a href="https://github.com/tesseract-ocr/tesseract">Tesseract</a>. Tesseract provide a CLI taking a image in input and returning it's O.C.R. result.</p>
 <p>We only need to install it then can use it like this:</p>
 <pre><code class="language-go">func ocr(path string) string {
     cmdArgs := []string{path, &quot;stdout&quot;, &quot;--psm&quot;, &quot;6&quot;}
