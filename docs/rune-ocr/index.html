@@ -68,22 +68,21 @@
             <hr/>
             <p>Welcome to my episode 2 (oh, this is a serie now ?) of learning Golang. As I'm still on my Golang learning journey I'm hungry about personnal project where I can practice It. Did I told you about our lord and savior Summoners War ?</p>
 <p>Summoners War is a popular mobile game where players take on the role of a summoner with the ability to summon creatures to fight on their behalf. These monsters come in various elemental types and have different roles and abilities in battles.</p>
-<p>The gameplay primarily revolves around turn-based battles where players assemble teams of monsters to fight against computer-controlled opponents or other players in player-versus-player (PvP) modes. Battles are strategic, and success often depends on team composition, rune management, and understanding of elemental advantages and disadvantages.</p>
-<p>See old school Final Fantasy ? Pretty much the same if your characters and items obtention what mixed with a casino.</p>
+<p>The gameplay primarily revolves around turn-based battles where players assemble teams of monsters to fight against computer-controlled opponents or other players in player-versus-player modes. Battles are strategic, and success often depends on team composition, rune management, and understanding of elemental advantages and disadvantages.</p>
+<p>See old school Final Fantasy ? Pretty much the same if your characters and items obtention was mixed with a casino.</p>
 <h2>How runes works ?</h2>
 <p>I will simplify this part to what's revelant for the project. When you start to be advanced in the game, runes you loot have 3 to 5 lines of random caracteristics. Each of these imparts a specific amount of that characteristic to your monster, within a certain range.</p>
 <p>The range is contingent on the specific characteristic, and the amount is subject to luck. Now you can discern the direction we're heading in.</p>
 <p><img alt="Base rune SW" src="medias/rune1.png" /></p>
-<p>A rune can be upgraded up to level 15, and during this process, it receives an additional 3 to 4 boosts in stats. These boosts fall within the same range as the initial ones.</p>
-<p>This implies that the same rune can either become quite powerful or relatively lackluster depending on the quality of the boosts received during its leveling process.</p>
+<p>A rune can be upgraded up to level 15, and during this process, it receives an additional 3 to 4 boosts in stats. These boosts fall within the same range as the initial ones. This implies that the same rune can either become quite powerful or relatively lackluster depending on the quality of the boosts received during its leveling process.</p>
 <p>This is what a bad rune look with my actual standards:</p>
 <p><img alt="Bad rune SW" src="medias/bad-rune.png" /></p>
 <p>And a good one:</p>
 <p><img alt="Good rune SW" src="medias/good-rune.png" /></p>
 <p>Rune efficiency calculates the percentage of a rune's stats in comparison to those of a perfect rune. As you advance in the game, especially in mid to late stages, acquiring runes with higher efficiency becomes crucial for maximizing your team's potential. In my example, the first rune has an efficiency of approximately 79%, whereas the second one approaches 99%.</p>
 <h2>Efficiency</h2>
-<p>The formula to calcul efficiency was theorized years ago by Barion and can be summarized like this:
-efficiency = (sum(sub_stat/sub_stat_max)+1)/2.8</p>
+<p>The formula to calcul efficiency was theorized years ago by Barion and can be summarized like this:</p>
+<p>efficiency = (sum(sub_stat/sub_stat_max)+1)/2.8</p>
 <p>As we are aware of the formula, we can calculate each rune's efficiency ourselves, correct? However, the issue lies in the immense effort required to perform this calculation for each individual rune. There are occasions where you may need to sift through approximately a thousand runes, either to enhance your weaker ones or to decide whether to sell a new rune due to it not meeting your current minimum standards.</p>
 <p>The community already have gone this path, and a popular tool for this is called "Summoners War Optimizer". Despite it an insanely compleat application with a plethora of features, calculating efficiency is just one of it, and, by design, miss one of my need. Sometimes, all I want is to simply navigate to my inventory, evaluate my runes, and efficiently sift through them for selling or replacement, nothing more, nothing less.</p>
 <p>The actual workflow for SWOP is:</p>
@@ -228,8 +227,7 @@ func generate_rune_subs(img image.Image) image.Image {
     return ocrbis(imgbyte)
 }
 </code></pre>
-<p>At this stage, we can submit our images to Tesseract, which will then provide us the text version. Before we proceed with efficiency calculations, there are some necessary text processing steps to be taken.
-s</p>
+<p>At this stage, we can submit our images to Tesseract, which will then provide us the text version. Before we proceed with efficiency calculations, there are some necessary text processing steps to be taken.</p>
 <h3>Implementing efficiency formula</h3>
 <p>First we need to create the list of maximum value a stat can be.</p>
 <pre><code class="language-go">var max_value = map[string]int{
@@ -500,7 +498,8 @@ rune_maxtier_txt := gen_txt(&quot;Rune Max Tier&quot;, white, fyne.TextStyle{Bol
     })
 </code></pre>
 <p>The stop button only do one thing when pressed: stop the current scan and show the start button where all our work live.</p>
-<p>The start button, when pressed, set the window's container with our placeholders which will be feed with our rune infos later. Then we declare a scan function which will call our OCR and efficiency functions to actually generated thoses values. Finally, is refresh the window to show them to the user. This function is called a go routine and allow us to run it in background, without it, when the stop button is pressed the action would have been queued to be run... after the, currently, infinite function.</p>
+<p>The start button, when pressed, set the window's container with our placeholders which will be feed later with our rune infos. Then we declare a scan function which will call our OCR and efficiency functions to actually generated thoses values.</p>
+<p>Finally, it refresh the window to show them to the user. This function is called a go routine and allow us to run it in background, without it, when the stop button is pressed the action would have been queued to be run... after the, currently, infinite function.</p>
 <p>For a better user experience it would be great to have our application's window other the game. To reach this we can use window's "always on top" feature. Implementation is done by calling user32.dll, a core windows dll containing Windows's API functions related to the Windows user interface.</p>
 <pre><code class="language-go">func GetWindowHandleByWindowName(window_name string) uintptr {
     user32dll := windows.MustLoadDLL(&quot;user32.dll&quot;)
