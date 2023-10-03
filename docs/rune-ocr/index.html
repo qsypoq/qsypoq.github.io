@@ -186,7 +186,7 @@ func generate_rune_subs(img image.Image) image.Image {
 </code></pre>
 <p>At first I choosed to create tmp files on filesystem before sending them to Tesseract. But soon enough my stingy part wanted to get rid of this and do everything in RAM to save on SSD life time.</p>
 <p>For this we need to go a little deeper on Tesseract options, by using stdin arg we can pass the image directly as input instead of the image's path on FS. This is the tricky part, first, exec.Command only support a string array as parameter. I tried to trick it using b64 encoding and stuff but it didn't worked.</p>
-<p>This where StdinPipe came into action. This function returns a pipe connected to the command's stdin when it's started, this time, it worked, kind of... because Tesseract is waiting for a byte array. So first of all, we need to convert our image to it.</p>
+<p>This is where StdinPipe came into action. This function returns a pipe connected to the command's stdin when it's started, this time, it worked, kind of... because Tesseract is waiting for a byte array. So first of all, we need to convert our image to it.</p>
 <pre><code class="language-go">func image_to_byte(img image.Image) []byte {
     buf := new(bytes.Buffer)
     err := png.Encode(buf, img)
@@ -258,8 +258,7 @@ func clean_char(to_clean string, char string) string {
     return cleaned
 }
 </code></pre>
-<p>If some text is badly interpreted, we also need to catch it:</p>
-<p>First, detecting if the stat actually exist:</p>
+<p>If some text is badly interpreted, we also need to catch it. First, detecting if the stat actually exist:</p>
 <pre><code class="language-go">func stat_exist(stat string) bool {
     for value, _ := range max_value {
         if stat == value {
